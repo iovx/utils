@@ -1,0 +1,18 @@
+{
+  "name": "@iovx/utils",
+  "version": "1.0.0",
+  "description": "tool collection",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dist": "iv dist",
+    "build": "iv build",
+    "compile": "iv build",
+    "clean": "iv clean"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@iovx/iv-tool": "^1.0.5"
+  }
+}

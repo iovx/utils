@@ -1,0 +1,13 @@
+{
+  "tsFiles": "src/**/*.ts",
+  "dist": "",
+  "cwd": ".",
+  "compress": {
+    "dist": false
+  },
+  "clean": [
+    "dist",
+    "es",
+    "lib"
+  ]
+}

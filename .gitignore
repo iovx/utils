@@ -1,0 +1,12 @@
+node_modules/
+.git/
+.svn/
+dist/
+.idea/
+coverage
+/lib
+/es
+*.rar
+/demo/es
+/demo/lib
+/demo/dist
