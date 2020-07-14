@@ -1,6 +1,7 @@
 {
   "tsFiles": "src/**/*.ts",
   "dist": "",
+  "libDir": "src",
   "cwd": ".",
   "compress": {
     "dist": false

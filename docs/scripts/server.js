@@ -6,7 +6,7 @@ const webpackConfig = require('./webpack.dev');
 const compiler = webpack(webpackConfig);
 const server = new WebpackDevServer(compiler);
 
-server.listen(7777, () => {
-  console.log('Server is running at 7777 !!!');
+server.listen(7772, () => {
+  console.log('Server is running at 7772 !!!');
 });
 

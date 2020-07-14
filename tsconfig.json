@@ -29,7 +29,9 @@
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
-      "@iovx/utils/*": ["lib/*"]
+      "@iovx/utils/*": [
+        "lib/*"
+      ]
     }
   },
   "include": [

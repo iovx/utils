@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dist": "iv dist",
     "build": "iv build",
-    "compile": "iv build",
+    "compile": "iv compile",
     "clean": "iv clean",
     "start:doc": "node ./docs/scripts/server.js"
   },
