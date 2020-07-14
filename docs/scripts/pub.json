@@ -1,0 +1,7 @@
+{
+  "output": "docs/dist",
+  "demoPath": "src",
+  "publicPath": "/",
+  "deployPath1": "D:/Develop/localhost/static/pages",
+  "deployPath": "E:/xampp/htdocs/zzht/pages"
+}

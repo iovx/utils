@@ -27,7 +27,10 @@
     ],
     "noEmit": false,
     "esModuleInterop": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@iovx/utils/*": ["lib/*"]
+    }
   },
   "include": [
     "src/**/*.ts",
