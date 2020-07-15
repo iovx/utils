@@ -5,7 +5,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniExtract = require('mini-css-extract-plugin');
 const getPubConfig = require('./getPubConfig');
 const {getProjectPath, resolve} = require('./utils/helper');
-
+const getBabelConfig = require('./babel.config');
 const {srcPath, packageName, publicPath: deployPublicPath, outputDir, rootPath} = getPubConfig();
 
 module.exports = function (options) {
@@ -45,12 +45,25 @@ module.exports = function (options) {
       rules: [
         {
           test: /\.tsx?$/,
-          use: ['babel-loader', 'awesome-typescript-loader'],
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                ...getBabelConfig(),
+              }
+            }, 'awesome-typescript-loader'],
           exclude: /(node-modules|bower-components)/,
         },
         {
           test: /\.jsx?$/,
-          use: ['babel-loader'],
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                ...getBabelConfig(),
+              }
+            }
+          ],
           // exclude: /(node-modules|bower-components)/,
         },
         {test: /\.txt/, use: ['raw-loader']},

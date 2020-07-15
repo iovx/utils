@@ -21,11 +21,14 @@ export interface ISimpleXHROptions<T = any> {
 
   beforeSend?(xhr: XMLHttpRequest): void;
 }
+
 export type ISimpleXHRPrevInterceptorMethod = (options: ISimpleXHROptions, xhr: XMLHttpRequest) => boolean;
 export type ISimpleXHRNextInterceptorMethod<T = any> = (response: ISimpleXHRResponse<T>) => ISimpleXHRResponse<T>;
+
 export interface ISimpleXHRInterceptor {
   intercept: Function;
 }
+
 export interface ISimpleXHRPrevInterceptor extends ISimpleXHRInterceptor {
   intercept: ISimpleXHRPrevInterceptorMethod;
 }
@@ -37,6 +40,11 @@ export interface ISimpleXHRNextInterceptor<T = any> extends ISimpleXHRIntercepto
 export interface ISimpleXHRAuth {
   username: string;
   password: string
+}
+
+export interface ISimpleInterceptorMap<T=any> {
+  prev: ISimpleXHRPrevInterceptor;
+  next: ISimpleXHRNextInterceptor<T>;
 }
 
 export type ISimpleXHRMethod =

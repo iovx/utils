@@ -1,8 +1,9 @@
 import {MapType} from "../_utils/type";
 import {getCookie, isCSRFSafeMethod} from "./util";
 import {
+  ISimpleInterceptorMap,
   ISimpleXHRAuth,
-  ISimpleXHRHeader,
+  ISimpleXHRHeader, ISimpleXHRInterceptor,
   ISimpleXHRListener,
   ISimpleXHRMethod, ISimpleXHRNextInterceptor,
   ISimpleXHROptions, ISimpleXHRPrevInterceptor, ISimpleXHRResponse,
@@ -16,6 +17,11 @@ function getParsedHeaders(headerString: string) {
     return prev;
   }, {} as ISimpleXHRHeader);
 }
+
+const _interceptor = {
+  prevInterceptors: [] as ISimpleXHRPrevInterceptor[],
+  nextInterceptors: [] as ISimpleXHRNextInterceptor[],
+};
 
 const contentTypeObj: MapType<string> = {
   'form': 'application/x-www-form-urlencoded;charset=utf-8',
@@ -74,12 +80,12 @@ export function SimpleXHR<T = any>(options: ISimpleXHROptions<T>) {
   if (finalMethod.toUpperCase() === 'GET') {
     finalUrl = getUrl(finalUrl, data, ct);
   }
-  const finalPrevInterceptors = (prevInterceptors || []);
+  const finalPrevInterceptors = ([..._interceptor.prevInterceptors, ...(prevInterceptors || [])]);
   while (finalPrevInterceptors.length) {
     const interceptor = finalPrevInterceptors.shift();
     if (interceptor) {
       const res = interceptor.intercept(finalOptions, xhr);
-      if (!res) {
+      if (res === false) {
         return null;
       }
     }
@@ -138,14 +144,10 @@ export function SimpleXHR<T = any>(options: ISimpleXHROptions<T>) {
       return;
     }
     if (xhr.readyState === XMLHttpRequest.DONE) {
-      let temp = result;
-      const finalNextInterceptors = (nextInterceptors || []);
-      while (finalNextInterceptors.length) {
-        const interceptor = finalNextInterceptors.shift();
-        if (interceptor) {
-          temp = interceptor.intercept(temp);
-        }
-      }
+      const finalNextInterceptors = ([..._interceptor.nextInterceptors, ...(nextInterceptors || [])]);
+      const temp = finalNextInterceptors.reduce((acc, cur) => {
+        return cur.intercept(acc);
+      }, result);
       if (xhr.status === 200) {
         if (success) {
           success(temp);
@@ -261,6 +263,24 @@ export function put<T>(options: ISimpleXHROptions) {
 }
 
 export default class Http {
+
+  static interceptor<T=any>(type: keyof ISimpleInterceptorMap, cb: ISimpleInterceptorMap[keyof ISimpleInterceptorMap]) {
+    if (type === 'prev') {
+      _interceptor.prevInterceptors.push(cb as ISimpleXHRPrevInterceptor);
+      return;
+    }
+    if (type === 'next') {
+      _interceptor.nextInterceptors.push(cb as ISimpleXHRNextInterceptor<T>);
+    }
+  }
+
+  static request<T = any>(options: ISimpleXHROptions) {
+    return request<T>({
+      method: 'GET',
+      ...options,
+    });
+  }
+
   static get<T = any>(options: ISimpleXHROptions) {
     return request<T>({
       method: 'GET',
