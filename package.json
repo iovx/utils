@@ -7,10 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dist": "iv dist",
     "build": "iv build",
+    "build:page": "iv build:page",
     "compile": "iv compile",
     "clean": "iv clean",
-    "start": "iv start & npm run start:doc",
-    "start:doc": "node ./docs/scripts/server.js"
+    "start": "iv start & npm run server",
+    "server": "iv server",
+    "dev": "iv clean && iv build && iv dev"
   },
   "author": "",
   "license": "ISC",
