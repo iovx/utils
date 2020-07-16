@@ -1,6 +1,6 @@
 {
   "name": "@iovx/utils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "tool collection",
   "main": "index.js",
   "scripts": {
@@ -14,8 +14,15 @@
     "server": "iv server",
     "dev": "iv clean && iv build && iv dev"
   },
-  "author": "",
+  "author": "ixw2017",
   "license": "ISC",
+  "files": [
+    "dist",
+    "es",
+    "lib",
+    "package.json",
+    "README.md"
+  ],
   "devDependencies": {
     "@babel/cli": "^7.1.5",
     "@babel/core": "^7.10.2",
