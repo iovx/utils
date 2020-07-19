@@ -3,7 +3,7 @@
     "src/**/*.ts",
     "!src/**/__tests__/**/*.ts"
   ],
-  "assetFiles":[
+  "assetFiles": [
     "src/**/*.@(json|png|jpg|jpeg|gif|svg)"
   ],
   "dist": "",
@@ -24,6 +24,9 @@
       "name": "index",
       "title": "微风文档",
       "filename": "index.html"
+    },
+    "server": {
+      "port": "7779"
     },
     "dll": [
       {
