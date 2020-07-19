@@ -39,16 +39,16 @@ export interface ISimpleXHRNextInterceptor<T = any> extends ISimpleXHRIntercepto
 
 export interface ISimpleXHRAuth {
   username: string;
-  password: string
+  password: string;
 }
 
-export interface ISimpleInterceptorMap<T=any> {
+export interface ISimpleInterceptorMap<T = any> {
   prev: ISimpleXHRPrevInterceptor;
   next: ISimpleXHRNextInterceptor<T>;
 }
 
 export type ISimpleXHRMethod =
-  'GET'
+  | 'GET'
   | 'POST'
   | 'OPTIONS'
   | 'DELETE'
@@ -76,6 +76,6 @@ export interface ISimpleXHRUploadListener {
 export interface ISimpleXHRResponse<T = any> {
   status: number;
   statusText: string;
-  data: T,
+  data: T;
   headers: any;
 }

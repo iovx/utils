@@ -1,21 +1,27 @@
-import {MapType} from "../_utils/type";
-import {getCookie, isCSRFSafeMethod} from "./util";
+import { MapType } from '../_utils/type';
+import { getCookie, isCSRFSafeMethod } from './util';
 import {
   ISimpleInterceptorMap,
   ISimpleXHRAuth,
-  ISimpleXHRHeader, ISimpleXHRInterceptor,
+  ISimpleXHRHeader,
   ISimpleXHRListener,
-  ISimpleXHRMethod, ISimpleXHRNextInterceptor,
-  ISimpleXHROptions, ISimpleXHRPrevInterceptor, ISimpleXHRResponse,
-  ISimpleXHRUploadListener
-} from "./interface";
+  ISimpleXHRMethod,
+  ISimpleXHRNextInterceptor,
+  ISimpleXHROptions,
+  ISimpleXHRPrevInterceptor,
+  ISimpleXHRResponse,
+  ISimpleXHRUploadListener,
+} from './interface';
 
 function getParsedHeaders(headerString: string) {
-  return headerString.split('\r\n').filter(item => !!item).reduce((prev, cur) => {
-    const [key, value] = cur.split(':', 2);
-    prev[key] = value.trim();
-    return prev;
-  }, {} as ISimpleXHRHeader);
+  return headerString
+    .split('\r\n')
+    .filter((item) => !!item)
+    .reduce((prev, cur) => {
+      const [key, value] = cur.split(':', 2);
+      prev[key] = value.trim();
+      return prev;
+    }, {} as ISimpleXHRHeader);
 }
 
 const _interceptor = {
@@ -24,13 +30,13 @@ const _interceptor = {
 };
 
 const contentTypeObj: MapType<string> = {
-  'form': 'application/x-www-form-urlencoded;charset=utf-8',
-  'xml': 'application/xml;charset-utf-8',
+  form: 'application/x-www-form-urlencoded;charset=utf-8',
+  xml: 'application/xml;charset-utf-8',
   'plain-text': 'application/text;charset-utf-8',
   'form-data': 'application/text;charset-utf-8',
-  'json': 'application/json;charset=utf-8',
-  'upload': 'multipart/form-data',
-  'none': 'NONE',
+  json: 'application/json;charset=utf-8',
+  upload: 'multipart/form-data',
+  none: 'NONE',
 };
 
 function getDefaultOptions(): Partial<ISimpleXHROptions> {
@@ -45,14 +51,82 @@ function getDefaultOptions(): Partial<ISimpleXHROptions> {
     contentType: contentTypeObj.form,
     uploadListener: {} as ISimpleXHRUploadListener,
     auth: {} as ISimpleXHRAuth,
-    error: null as (((data: any) => void) | null),
+    error: null as ((data: any) => void) | null,
     prevInterceptors: [] as ISimpleXHRPrevInterceptor[],
     nextInterceptors: [] as ISimpleXHRNextInterceptor[],
   };
 }
 
+/**
+ * GET JSON参数
+ * @param data
+ */
+function buildJSON(data: object) {
+  return encodeURIComponent(JSON.stringify(data));
+}
+
+/**
+ * 转换参数
+ * @param data
+ * @returns {string}
+ */
+function buildQuery(data: string | object | [string, string][]) {
+  if (data) {
+    if (data instanceof FormData) {
+      return data;
+    }
+    if (typeof data === 'string') {
+      return data;
+    }
+    if (Array.isArray(data)) {
+      return data
+        .filter(([key, value]) => typeof value !== 'undefined')
+        .map(([key, value]) => {
+          return `${key}=${encodeURIComponent(value)}`;
+        })
+        .join('&');
+    }
+    if (typeof data === 'object') {
+      return Object.entries(data)
+        .filter(([key, value]) => typeof value !== 'undefined')
+        .map(([key, value]) => {
+          return `${key}=${encodeURIComponent(value)}`;
+        })
+        .join('&');
+    }
+  }
+  return '';
+}
+
+function buildBodyData(params?: string | object | object[], contentType?: string) {
+  if (!params) {
+    return;
+  }
+  const b = contentType === contentTypeObj.json ? buildJSON : buildQuery;
+  return b(params);
+}
+
+/**
+ * 计算GET URL
+ * @param url
+ * @param params
+ * @param contentType
+ */
+function getUrl(url: string, params?: string | object | object[], contentType?: string) {
+  if (typeof params === 'undefined') {
+    return url;
+  }
+  const result = url.trim();
+  const lastChar = result[result.length - 1];
+  const b = contentType === contentTypeObj.json ? buildJSON : buildQuery;
+  if (result.indexOf('?') !== -1) {
+    return `${url}${lastChar === '&' ? '' : '&'}${b(params)}`;
+  }
+  return `${url}?${b(params)}`;
+}
+
 export function SimpleXHR<T = any>(options: ISimpleXHROptions<T>) {
-  const finalOptions: ISimpleXHROptions = {...getDefaultOptions(), ...options};
+  const finalOptions: ISimpleXHROptions = { ...getDefaultOptions(), ...options };
   const {
     url,
     async = true,
@@ -73,14 +147,14 @@ export function SimpleXHR<T = any>(options: ISimpleXHROptions<T>) {
     nextInterceptors,
   } = finalOptions;
   const xhr = new XMLHttpRequest();
-  const {username, password} = auth || {} as ISimpleXHRAuth;
+  const { username, password } = auth || ({} as ISimpleXHRAuth);
   const finalMethod = method || 'GET';
   let finalUrl = url;
   const ct = contentTypeObj[contentType || ''] || contentType;
   if (finalMethod.toUpperCase() === 'GET') {
     finalUrl = getUrl(finalUrl, data, ct);
   }
-  const finalPrevInterceptors = ([..._interceptor.prevInterceptors, ...(prevInterceptors || [])]);
+  const finalPrevInterceptors = [..._interceptor.prevInterceptors, ...(prevInterceptors || [])];
   while (finalPrevInterceptors.length) {
     const interceptor = finalPrevInterceptors.shift();
     if (interceptor) {
@@ -91,12 +165,12 @@ export function SimpleXHR<T = any>(options: ISimpleXHROptions<T>) {
     }
   }
   if (listener) {
-    Object.keys(listener).forEach(key => {
+    Object.keys(listener).forEach((key) => {
       xhr.addEventListener(key, listener[key]);
     });
   }
   if (uploadListener) {
-    Object.keys(uploadListener).forEach(key => {
+    Object.keys(uploadListener).forEach((key) => {
       xhr.upload.addEventListener(key, uploadListener[key]);
     });
   }
@@ -111,11 +185,11 @@ export function SimpleXHR<T = any>(options: ISimpleXHROptions<T>) {
   const result: ISimpleXHRResponse<T> = {
     status: 0,
     statusText: '',
-    data: null as any as T,
+    data: (null as any) as T,
     headers: {} as ISimpleXHRHeader,
   };
   xhr.onreadystatechange = () => {
-    const {statusText, status, response} = xhr;
+    const { statusText, status, response } = xhr;
     result.data = response;
     result.status = status;
     result.statusText = statusText;
@@ -131,7 +205,7 @@ export function SimpleXHR<T = any>(options: ISimpleXHROptions<T>) {
         xhr.setRequestHeader('Content-Type', ct);
       }
       if (headers) {
-        Object.keys(headers).forEach(key => {
+        Object.keys(headers).forEach((key) => {
           xhr.setRequestHeader(key, headers[key]);
         });
       }
@@ -144,7 +218,7 @@ export function SimpleXHR<T = any>(options: ISimpleXHROptions<T>) {
       return;
     }
     if (xhr.readyState === XMLHttpRequest.DONE) {
-      const finalNextInterceptors = ([..._interceptor.nextInterceptors, ...(nextInterceptors || [])]);
+      const finalNextInterceptors = [..._interceptor.nextInterceptors, ...(nextInterceptors || [])];
       const temp = finalNextInterceptors.reduce((acc, cur) => {
         return cur.intercept(acc);
       }, result);
@@ -168,72 +242,6 @@ export function SimpleXHR<T = any>(options: ISimpleXHROptions<T>) {
   return xhr;
 }
 
-/**
- * 计算GET URL
- * @param url
- * @param params
- * @param contentType
- */
-function getUrl(url: string, params?: string | object | object[], contentType?: string) {
-  if (typeof params === 'undefined') {
-    return url;
-  }
-  let result = url.trim();
-  const lastChar = result[result.length - 1];
-  const b = contentType === contentTypeObj.json ? buildJSON : buildQuery;
-  if (result.indexOf('?') !== -1) {
-    return `${url}${lastChar === '&' ? '' : '&'}${b(params)}`;
-  }
-  return `${url}?${b(params)}`;
-}
-
-/**
- * 转换参数
- * @param data
- * @returns {string}
- */
-function buildQuery(data: string | object | [string, string][]) {
-  if (data) {
-    if (data instanceof FormData) {
-      return data;
-    }
-    if (typeof data === 'string') {
-      return data;
-    }
-    if (Array.isArray(data)) {
-      return data.filter(([key, value]) => typeof value !== 'undefined').map(([key, value]) => {
-        return `${key}=${encodeURIComponent(value)}`;
-      })
-        .join('&');
-    }
-    if (typeof data === 'object') {
-      return Object.entries(data)
-        .filter(([key, value]) => typeof value !== 'undefined')
-        .map(([key, value]) => {
-          return `${key}=${encodeURIComponent(value)}`;
-        })
-        .join('&');
-    }
-  }
-  return '';
-}
-
-/**
- * GET JSON参数
- * @param data
- */
-function buildJSON(data: object) {
-  return encodeURIComponent(JSON.stringify(data));
-}
-
-function buildBodyData(params?: string | object | object[], contentType?: string) {
-  if (!params) {
-    return;
-  }
-  const b = contentType === contentTypeObj.json ? buildJSON : buildQuery;
-  return b(params);
-}
-
 export function request<T = any>(options: ISimpleXHROptions) {
   return new Promise<ISimpleXHRResponse<T>>((resolve, reject) => {
     const xhr = SimpleXHR<T>({
@@ -242,7 +250,7 @@ export function request<T = any>(options: ISimpleXHROptions) {
         resolve(res);
       },
       error: (res) => {
-        reject({res, xhr});
+        reject({ res, xhr });
       },
     });
   });
@@ -263,8 +271,10 @@ export function put<T>(options: ISimpleXHROptions) {
 }
 
 export default class Http {
-
-  static interceptor<T=any>(type: keyof ISimpleInterceptorMap, cb: ISimpleInterceptorMap[keyof ISimpleInterceptorMap]) {
+  static interceptor<T = any>(
+    type: keyof ISimpleInterceptorMap,
+    cb: ISimpleInterceptorMap[keyof ISimpleInterceptorMap]
+  ) {
     if (type === 'prev') {
       _interceptor.prevInterceptors.push(cb as ISimpleXHRPrevInterceptor);
       return;

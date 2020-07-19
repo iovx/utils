@@ -36,6 +36,7 @@
   },
   "include": [
     "src/**/*.ts",
+    "docs/**/*.ts",
     "typings/**/*.ts"
   ],
   "exclude": [

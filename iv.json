@@ -1,5 +1,11 @@
 {
-  "tsFiles": "src/**/*.ts",
+  "tsFiles": [
+    "src/**/*.ts",
+    "!src/**/__tests__/**/*.ts"
+  ],
+  "assetFiles":[
+    "src/**/*.@(json|png|jpg|jpeg|gif|svg)"
+  ],
   "dist": "",
   "libDir": "src",
   "cwd": ".",
@@ -12,7 +18,7 @@
     "lib"
   ],
   "pageOptions": {
-    "root":"docs",
+    "root": "docs",
     "inject": {},
     "page": {
       "name": "index",
