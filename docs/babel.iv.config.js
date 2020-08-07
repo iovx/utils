@@ -1,4 +1,5 @@
 module.exports = (config) => {
+  console.log(config.presets[0]);
   config.plugins.push([
     'import',
     {

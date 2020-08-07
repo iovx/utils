@@ -270,3 +270,26 @@ export function flatTree(data: ITreeNode[], output: ITreeNode[] = []) {
   }
   return output;
 }
+
+
+/**
+ * 检索子树
+ * @param {ITreeNode[]} treeList
+ * @param {(n: ITreeNode) => boolean} filter
+ * @returns {(ITreeNode | null)[]}
+ */
+export function getSearchTree(treeList: ITreeNode[], filter: (n: ITreeNode) => boolean) {
+  function loop(node: ITreeNode) {
+    if (filter(node)) {
+      return node;
+    }
+    if (node.children) {
+      node.children = node.children.map(loop).filter(Boolean) as ITreeNode[];
+      if (node.children.length) {
+        return node;
+      }
+    }
+    return null;
+  }
+  return treeList.map(loop).filter(Boolean);
+}
