@@ -1,4 +1,4 @@
-export type MapType<T> = { [index: string]: T };
+export type MapType<T = any> = { [index: string]: T };
 
 export interface ITreeNode {
   id: number;

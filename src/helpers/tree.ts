@@ -241,17 +241,17 @@ export function getTreeNodePath<T extends ITreeNode = ITreeNode>(
 export function searchTree(data: ITreeNode[], filter: (key: ITreeNode) => boolean) {
   const result: ITreeNode[] = [];
   data.forEach((item) => {
-    result.push(t(item, [] as ITreeNode[], filter));
+    result.push(loop(item, [] as ITreeNode[], filter));
   });
   return result.filter(filter);
 
-  function t(item: ITreeNode, inner: ITreeNode[], filter: (key: ITreeNode) => boolean) {
-    const { children } = Object.assign({}, item);
+  function loop(item: ITreeNode, inner: ITreeNode[], filter: (key: ITreeNode) => boolean) {
+    const {children} = Object.assign({}, item);
     if (children && children.length) {
-      inner = children.map((item) => t(item, inner, filter)).filter(filter);
+      inner = children.map((item) => loop(item, inner, filter)).filter(filter);
     }
-    const { children: ic, ...rest } = item;
-    return { ...rest, children: inner };
+    const {children: ic, ...rest} = item;
+    return {...rest, children: inner};
   }
 }
 

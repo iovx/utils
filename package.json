@@ -1,6 +1,6 @@
 {
   "name": "@iovx/utils",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "tool collection",
   "main": "index.js",
   "scripts": {
