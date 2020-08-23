@@ -9,7 +9,7 @@
     "dist": "iv dist",
     "build": "iv build",
     "build:page": "iv build:page",
-    "compile": "iv compile",
+    "compile": "iv compile --es & iv compile --lib",
     "clean": "iv clean",
     "start": "iv start & npm run server",
     "server": "iv server",
