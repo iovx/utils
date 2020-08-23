@@ -1,8 +1,9 @@
 {
   "name": "@iovx/utils",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "tool collection",
   "main": "index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "test": "jest --coverage",
     "lint": "eslint --ext .tsx,.ts --fix ./src",
