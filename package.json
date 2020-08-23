@@ -2,7 +2,7 @@
   "name": "@iovx/utils",
   "version": "1.0.3",
   "description": "tool collection",
-  "main": "index.js",
+  "main": "dist/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "jest --coverage",
