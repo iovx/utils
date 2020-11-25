@@ -246,12 +246,12 @@ export function searchTree(data: ITreeNode[], filter: (key: ITreeNode) => boolea
   return result.filter(filter);
 
   function loop(item: ITreeNode, inner: ITreeNode[], filter: (key: ITreeNode) => boolean) {
-    const {children} = Object.assign({}, item);
+    const { children } = Object.assign({}, item);
     if (children && children.length) {
       inner = children.map((item) => loop(item, inner, filter)).filter(filter);
     }
-    const {children: ic, ...rest} = item;
-    return {...rest, children: inner};
+    const { children: ic, ...rest } = item;
+    return { ...rest, children: inner };
   }
 }
 
@@ -270,7 +270,6 @@ export function flatTree(data: ITreeNode[], output: ITreeNode[] = []) {
   }
   return output;
 }
-
 
 /**
  * 检索子树

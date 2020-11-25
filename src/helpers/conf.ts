@@ -1,17 +1,20 @@
-import {MapType} from "./interface";
+import { MapType } from './interface';
 
 export function conf2Obj(data: string, comment = false) {
   const result: { [index: string]: any } = {};
   let parent = result;
-  let paths = [parent];
+  const paths = [parent];
   const c = comment ? /^;/ : /^[;#]/;
-  const lines = data.split('\n').map(i => i.trim()).filter(Boolean);
-  lines.forEach(line => {
+  const lines = data
+    .split('\n')
+    .map((i) => i.trim())
+    .filter(Boolean);
+  lines.forEach((line) => {
     if (c.test(line)) {
       return;
     }
     if (/{$/.test(line)) {
-      paths.push(parent = paths[paths.length - 1][line.match(/(.+?)\s+{/)![1]] = {});
+      paths.push((parent = paths[paths.length - 1][line.match(/(.+?)\s+{/)![1]] = {}));
       return;
     }
     if (/}$/.test(line)) {
@@ -37,7 +40,7 @@ export function conf2Obj(data: string, comment = false) {
 
 export function obj2Conf(obj: MapType) {
   function loop(o: MapType, lines: string[] = [], depth = 0) {
-    Object.keys(o).forEach(k => {
+    Object.keys(o).forEach((k) => {
       const v = o[k];
       const tab = '\t'.repeat(depth);
       if (typeof v === 'string') {
@@ -45,7 +48,7 @@ export function obj2Conf(obj: MapType) {
         return;
       }
       if (Array.isArray(v)) {
-        v.forEach(i => lines.push(`${tab}${k}\t${i};`));
+        v.forEach((i) => lines.push(`${tab}${k}\t${i};`));
         return;
       }
       if (typeof v === 'object') {

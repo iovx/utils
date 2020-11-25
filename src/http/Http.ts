@@ -1,17 +1,83 @@
-import { MapType } from '../_utils/type';
 import { getCookie, isCSRFSafeMethod } from './util';
-import {
-  ISimpleInterceptorMap,
-  ISimpleXHRAuth,
-  ISimpleXHRHeader,
-  ISimpleXHRListener,
-  ISimpleXHRMethod,
-  ISimpleXHRNextInterceptor,
-  ISimpleXHROptions,
-  ISimpleXHRPrevInterceptor,
-  ISimpleXHRResponse,
-  ISimpleXHRUploadListener,
-} from './interface';
+
+type MapType<T = any> = Record<string, T>;
+
+export interface ISimpleXHROptions<T = any> {
+  async?: boolean;
+  url: string;
+  data?: any;
+  method?: ISimpleXHRMethod;
+  contentType?: string;
+  dataType?: XMLHttpRequestResponseType;
+  withCredentials?: boolean;
+  timeout?: number;
+  aysnc?: boolean;
+  listener?: ISimpleXHRListener;
+  headers?: ISimpleXHRHeader;
+  uploadListener?: ISimpleXHRUploadListener;
+  auth?: ISimpleXHRAuth;
+  prevInterceptors?: ISimpleXHRPrevInterceptor[];
+  nextInterceptors?: ISimpleXHRNextInterceptor<T>[];
+
+  success?(response: ISimpleXHRResponse<T>): void;
+
+  error?: ((data: any, xhr: XMLHttpRequest) => void) | null;
+
+  beforeSend?(xhr: XMLHttpRequest): void;
+}
+
+export type ISimpleXHRPrevInterceptorMethod = (options: ISimpleXHROptions, xhr: XMLHttpRequest) => boolean;
+export type ISimpleXHRNextInterceptorMethod<T = any> = (response: ISimpleXHRResponse<T>) => ISimpleXHRResponse<T>;
+
+export interface ISimpleXHRInterceptor {
+  intercept: Function;
+}
+
+export interface ISimpleXHRPrevInterceptor extends ISimpleXHRInterceptor {
+  intercept: ISimpleXHRPrevInterceptorMethod;
+}
+
+export interface ISimpleXHRNextInterceptor<T = any> extends ISimpleXHRInterceptor {
+  intercept: ISimpleXHRNextInterceptorMethod<T>;
+}
+
+export interface ISimpleXHRAuth {
+  username: string;
+  password: string;
+}
+
+export type ISimpleXHRMethod =
+  | 'GET'
+  | 'POST'
+  | 'OPTIONS'
+  | 'DELETE'
+  | 'PUT'
+  | 'HEAD'
+  | 'get'
+  | 'post'
+  | 'options'
+  | 'delete'
+  | 'put'
+  | 'head';
+
+export interface ISimpleXHRHeader {
+  [index: string]: string;
+}
+
+export interface ISimpleXHRListener {
+  [index: string]: (ev: XMLHttpRequestEventTargetEventMap[keyof XMLHttpRequestEventTargetEventMap]) => any;
+}
+
+export interface ISimpleXHRUploadListener {
+  [index: string]: (ev: XMLHttpRequestEventTargetEventMap[keyof XMLHttpRequestEventTargetEventMap]) => any;
+}
+
+export interface ISimpleXHRResponse<T = any> {
+  status: number;
+  statusText: string;
+  data: T;
+  headers: any;
+}
 
 function getParsedHeaders(headerString: string) {
   return headerString
@@ -24,38 +90,15 @@ function getParsedHeaders(headerString: string) {
     }, {} as ISimpleXHRHeader);
 }
 
-const _interceptor = {
-  prevInterceptors: [] as ISimpleXHRPrevInterceptor[],
-  nextInterceptors: [] as ISimpleXHRNextInterceptor[],
-};
-
 const contentTypeObj: MapType<string> = {
   form: 'application/x-www-form-urlencoded;charset=utf-8',
   xml: 'application/xml;charset-utf-8',
   'plain-text': 'application/text;charset-utf-8',
-  'form-data': 'application/text;charset-utf-8',
+  'form-data': 'application/form-data;charset-utf-8',
   json: 'application/json;charset=utf-8',
   upload: 'multipart/form-data',
   none: 'NONE',
 };
-
-function getDefaultOptions(): Partial<ISimpleXHROptions> {
-  return {
-    method: 'GET' as ISimpleXHRMethod,
-    dataType: 'json' as XMLHttpRequestResponseType,
-    withCredentials: false,
-    timeout: 0,
-    aysnc: true,
-    headers: {} as ISimpleXHRHeader,
-    listener: {} as ISimpleXHRListener,
-    contentType: contentTypeObj.form,
-    uploadListener: {} as ISimpleXHRUploadListener,
-    auth: {} as ISimpleXHRAuth,
-    error: null as ((data: any) => void) | null,
-    prevInterceptors: [] as ISimpleXHRPrevInterceptor[],
-    nextInterceptors: [] as ISimpleXHRNextInterceptor[],
-  };
-}
 
 /**
  * GET JSON参数
@@ -98,14 +141,6 @@ function buildQuery(data: string | object | [string, string][]) {
   return '';
 }
 
-function buildBodyData(params?: string | object | object[], contentType?: string) {
-  if (!params) {
-    return;
-  }
-  const b = contentType === contentTypeObj.json ? buildJSON : buildQuery;
-  return b(params);
-}
-
 /**
  * 计算GET URL
  * @param url
@@ -123,6 +158,43 @@ function getUrl(url: string, params?: string | object | object[], contentType?: 
     return `${url}${lastChar === '&' ? '' : '&'}${b(params)}`;
   }
   return `${url}?${b(params)}`;
+}
+
+function buildBodyData(params?: string | object | object[], contentType?: string) {
+  if (!params) {
+    return;
+  }
+  if (
+    contentType === contentTypeObj.upload ||
+    contentType === contentTypeObj.json ||
+    contentType === contentTypeObj['form-data']
+  ) {
+    const formData = new FormData();
+    Object.entries(params).forEach(([k, v]) => {
+      formData.append(k, v instanceof Blob ? v : typeof v === 'object' ? JSON.stringify(v) : v);
+    });
+    return formData;
+  }
+  const b = contentType === contentTypeObj.json ? buildJSON : buildQuery;
+  return b(params);
+}
+
+function getDefaultOptions(): Partial<ISimpleXHROptions> {
+  return {
+    method: 'GET' as ISimpleXHRMethod,
+    dataType: 'json' as XMLHttpRequestResponseType,
+    withCredentials: false,
+    timeout: 0,
+    aysnc: true,
+    headers: {} as ISimpleXHRHeader,
+    listener: {} as ISimpleXHRListener,
+    contentType: contentTypeObj.form,
+    uploadListener: {} as ISimpleXHRUploadListener,
+    auth: {} as ISimpleXHRAuth,
+    error: null as ((data: any) => void) | null,
+    prevInterceptors: [] as ISimpleXHRPrevInterceptor[],
+    nextInterceptors: [] as ISimpleXHRNextInterceptor[],
+  };
 }
 
 export function SimpleXHR<T = any>(options: ISimpleXHROptions<T>) {
@@ -151,15 +223,15 @@ export function SimpleXHR<T = any>(options: ISimpleXHROptions<T>) {
   const finalMethod = method || 'GET';
   let finalUrl = url;
   const ct = contentTypeObj[contentType || ''] || contentType;
-  if (finalMethod.toUpperCase() === 'GET') {
+  if (finalMethod.toUpperCase() === 'GET' || finalMethod.toUpperCase() === 'HEAD') {
     finalUrl = getUrl(finalUrl, data, ct);
   }
-  const finalPrevInterceptors = [..._interceptor.prevInterceptors, ...(prevInterceptors || [])];
+  const finalPrevInterceptors = prevInterceptors || [];
   while (finalPrevInterceptors.length) {
     const interceptor = finalPrevInterceptors.shift();
     if (interceptor) {
       const res = interceptor.intercept(finalOptions, xhr);
-      if (res === false) {
+      if (!res) {
         return null;
       }
     }
@@ -178,7 +250,7 @@ export function SimpleXHR<T = any>(options: ISimpleXHROptions<T>) {
     xhr.responseType = dataType;
   }
   if (error) {
-    xhr.onerror = function (e: ProgressEvent) {
+    xhr.onerror = function (e: ErrorEvent) {
       error(e, xhr);
     };
   }
@@ -201,11 +273,14 @@ export function SimpleXHR<T = any>(options: ISimpleXHROptions<T>) {
       if (!isCSRFSafeMethod(finalMethod as string)) {
         xhr.setRequestHeader('X-CSRFTOKEN', getCookie('CSRF_TOKEN') || '');
       }
-      if (ct && ct !== 'NONE') {
+      if (ct && ct !== 'NONE' && ct.toLowerCase() !== 'multipart/form-data') {
         xhr.setRequestHeader('Content-Type', ct);
       }
       if (headers) {
         Object.keys(headers).forEach((key) => {
+          if (key.toLocaleLowerCase() === 'content-type') {
+            return;
+          }
           xhr.setRequestHeader(key, headers[key]);
         });
       }
@@ -218,10 +293,14 @@ export function SimpleXHR<T = any>(options: ISimpleXHROptions<T>) {
       return;
     }
     if (xhr.readyState === XMLHttpRequest.DONE) {
-      const finalNextInterceptors = [..._interceptor.nextInterceptors, ...(nextInterceptors || [])];
-      const temp = finalNextInterceptors.reduce((acc, cur) => {
-        return cur.intercept(acc);
-      }, result);
+      let temp = result;
+      const finalNextInterceptors = nextInterceptors || [];
+      while (finalNextInterceptors.length) {
+        const interceptor = finalNextInterceptors.shift();
+        if (interceptor) {
+          temp = interceptor.intercept(temp);
+        }
+      }
       if (xhr.status === 200) {
         if (success) {
           success(temp);
@@ -237,7 +316,7 @@ export function SimpleXHR<T = any>(options: ISimpleXHROptions<T>) {
   xhr.open(finalMethod, finalUrl, async, username, password);
   xhr.timeout = timeout;
   xhr.withCredentials = withCredentials;
-  const body = buildBodyData(data);
+  const body = buildBodyData(data, contentType);
   xhr.send(body);
   return xhr;
 }
@@ -271,26 +350,6 @@ export function put<T>(options: ISimpleXHROptions) {
 }
 
 export default class Http {
-  static interceptor<T = any>(
-    type: keyof ISimpleInterceptorMap,
-    cb: ISimpleInterceptorMap[keyof ISimpleInterceptorMap]
-  ) {
-    if (type === 'prev') {
-      _interceptor.prevInterceptors.push(cb as ISimpleXHRPrevInterceptor);
-      return;
-    }
-    if (type === 'next') {
-      _interceptor.nextInterceptors.push(cb as ISimpleXHRNextInterceptor<T>);
-    }
-  }
-
-  static request<T = any>(options: ISimpleXHROptions) {
-    return request<T>({
-      method: 'GET',
-      ...options,
-    });
-  }
-
   static get<T = any>(options: ISimpleXHROptions) {
     return request<T>({
       method: 'GET',
