@@ -1,6 +1,6 @@
 {
   "name": "@iovx/utils",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "微风平台工具集合",
   "main": "dist/index.js",
   "types": "lib/index.d.ts",
