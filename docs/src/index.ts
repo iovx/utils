@@ -1,6 +1,6 @@
 import Http from '@iovx/utils/http';
-import {TaskExecutor} from '@iovx/utils/helpers';
-import {plugins} from './task';
+import { TaskExecutor } from '@iovx/utils/helpers';
+import { plugins } from './task';
 
 window.onload = () => {
   console.log('初始化...');
@@ -13,7 +13,7 @@ window.onload = () => {
         console.log(result, plugins);
       })
       .finally(() => {
-        TaskExecutor.new({plugins})
+        TaskExecutor.new({ plugins })
           .series()
           .then(() => {
             console.log('执行完成！！！');

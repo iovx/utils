@@ -76,10 +76,10 @@ export default class TaskManager extends LocalEvent<TaskManagerEventMap> {
       return this;
     }
     task.on('report', (args) => {
-      this.fire('report', { task, data: args });
+      this.fire('report', args.target);
     });
     task.on('cancel', (args) => {
-      this.fire('cancel', { task, data: args });
+      this.fire('cancel', args.target);
     });
     this.queue.push(task);
     return this;

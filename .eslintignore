@@ -13,3 +13,5 @@ deploy.js
 wex-cli
 *.d.ts
 .deploy/
+/lib
+/es

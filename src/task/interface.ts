@@ -29,7 +29,6 @@ export interface TaskOptions<T> {
 export enum TaskExecuteResultCode {
   SUCCESS,
   FAILED,
-  ERROR,
   EMPTY,
   RETRY_PENDING,
 }
@@ -80,24 +79,27 @@ export enum TaskManagerState {
   PAUSED_PENDING,
 }
 
-export interface TaskManagerEvent<T> extends EventMap {
+export interface LocalEventObject<T> {
   target: T;
-}
-
-export interface EventMap {
   type: string;
 }
+
+export interface TaskManagerEvent<T> extends LocalEventObject<T> {}
+
+export interface TaskEvent<T> extends LocalEventObject<T> {}
+
+export interface EventMap {}
 
 export interface TaskManagerCallback<T> {
   (e: TaskManagerEvent<T>): void;
 }
 
-export interface TaskSuccessCallback {
-  (e: { task: Task; data: TaskExecuteResult }): void;
+export interface TaskEventCallback<T> {
+  (e: TaskEvent<T>): void;
 }
 
-export interface TaskPauseCallback {
-  (e: { duration: number }): void;
+export interface TaskSuccessCallback {
+  (e: { task: Task; data: TaskExecuteResult }): void;
 }
 
 export interface TaskCompleteCallback {
@@ -112,14 +114,6 @@ export interface TaskFailedCallback {
   (e: { task: Task; error: Error | null; message: string }): void;
 }
 
-export interface TaskReportCallback {
-  (e: { task: Task; data: any }): void;
-}
-
-export interface TaskCancelCallback {
-  (e: { task: Task; data: any }): void;
-}
-
 export interface TaskManagerEventMap extends EventMap {
   complete: TaskManagerCallback<TaskManagerRunState>;
   pause: TaskManagerCallback<{ duration: number }>;
@@ -131,9 +125,8 @@ export interface TaskManagerEventMap extends EventMap {
 }
 
 export interface TaskEventMap extends EventMap {
-  report(...args: any[]): void;
-
-  cancel(...args: any[]): void;
+  report: TaskEventCallback<{ task: Task; data: any }>;
+  cancel: TaskEventCallback<{ task: Task; data: any }>;
 }
 
 export interface TaskManagerOptions {
