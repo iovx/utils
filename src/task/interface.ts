@@ -88,7 +88,7 @@ export interface EventMap {
   type: string;
 }
 
-export interface TaskCallback<T> {
+export interface TaskManagerCallback<T> {
   (e: TaskManagerEvent<T>): void;
 }
 
@@ -121,13 +121,13 @@ export interface TaskCancelCallback {
 }
 
 export interface TaskManagerEventMap extends EventMap {
-  complete: TaskCallback<TaskManagerRunState>;
-  pause: TaskCallback<{ duration: number }>;
-  success: TaskCallback<{ task: Task; data: TaskExecuteResult }>;
-  failed: TaskCallback<{ task: Task; error: Error | null; message: string }>;
-  load: TaskCallback<{ task: Task }>;
-  report: TaskCallback<{ task: Task; data: any }>;
-  cancel: TaskCallback<{ task: Task; data: any }>;
+  complete: TaskManagerCallback<TaskManagerRunState>;
+  pause: TaskManagerCallback<{ duration: number }>;
+  success: TaskManagerCallback<{ task: Task; data: TaskExecuteResult }>;
+  failed: TaskManagerCallback<{ task: Task; error: Error | null; message: string }>;
+  load: TaskManagerCallback<{ task: Task }>;
+  report: TaskManagerCallback<{ task: Task; data: any }>;
+  cancel: TaskManagerCallback<{ task: Task }>;
 }
 
 export interface TaskEventMap extends EventMap {

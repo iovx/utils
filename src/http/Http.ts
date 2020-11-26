@@ -250,7 +250,7 @@ export function SimpleXHR<T = any>(options: ISimpleXHROptions<T>) {
     xhr.responseType = dataType;
   }
   if (error) {
-    xhr.onerror = function (e: ErrorEvent) {
+    xhr.onerror = function (e:  ProgressEvent<EventTarget>) {
       error(e, xhr);
     };
   }

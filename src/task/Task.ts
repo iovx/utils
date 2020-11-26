@@ -55,7 +55,7 @@ export default class Task<T extends Record<string, any> = {}> extends LocalEvent
       return false;
     }
     this.state = TaskState.CANCEL;
-    this.fire('cancel', { task: this, data: {}, profile: this.getProfile() });
+    this.fire('cancel', { task: this, profile: this.getProfile() });
     return true;
   }
 

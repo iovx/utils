@@ -1,5 +1,5 @@
-import TaskManager, { RetryLevel, TaskResult } from '../';
-import { toPercent } from '../utils';
+import TaskManager, {RetryLevel, TaskResult} from '../';
+import {toPercent} from '../utils';
 
 export function runTask(id: string, timeout = 3000, success = true) {
   return new Promise<TaskResult>((resolve, reject) => {
@@ -24,14 +24,14 @@ export function runTask(id: string, timeout = 3000, success = true) {
 }
 
 export function createTask(id: string, timeout = 3000, priority = 0, success = true, retrievable = false) {
-  return TaskManager.newTask({ id, callback: () => runTask(id, timeout, success), priority, retrievable });
+  return TaskManager.newTask({id, callback: () => runTask(id, timeout, success), priority, retrievable});
 }
 
 TaskManager.new({
   limit: 4,
   retryLevel: RetryLevel.NORMAL_FIRST,
 })
-  .do(function() {
+  .do(function () {
     console.log('==================BEGIN==================');
   })
   .on('load', e => {
@@ -39,10 +39,10 @@ TaskManager.new({
     console.log('Execute Task：' + task.getId() + ' 级别:' + task.getPriority());
   })
   .on('failed', e => {
-    console.log(e.message);
+    console.log(e.target.message);
   })
   .on('complete', e => {
-    const { success, failed, total, duration, cancel } = e;
+    const {success, failed, total, duration, cancel} = e.target;
     console.log('===============================================');
     console.log('成功：%s 失败：%s 撤消：%s 共计：%s 耗时：%sms', success, failed, cancel, total, duration);
   })
@@ -50,11 +50,11 @@ TaskManager.new({
     console.log('==================完成暂停==================');
   })
   .on('success', e => {
-    const { data } = e;
+    const {data} = e.target;
     console.log(data.profile.toString());
   })
   .on('report', e => {
-    console.log(e.data.task.getId() + '->Report', JSON.stringify(e.data.data));
+    console.log(e.target.task.getId() + '->Report', JSON.stringify(e.target.data.data));
   })
   .register([
     createTask('0', 1000),
@@ -122,10 +122,10 @@ TaskManager.new({
     createTask('8', 5000),
     createTask('9', 1000),
   ])
-  .do(function() {
+  .do(function () {
     console.log('cancel:', this.getTask(3)?.cancel());
   })
-  .do(function() {
+  .do(function () {
     setTimeout(() => {
       console.log('准备暂停 >>>>>>>>>>>>>>>>>>>>>>>>>');
       this.pause().then(() => {
