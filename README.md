@@ -1,5 +1,14 @@
 ## 微风平台基础工具库
 
+[![npm][npm]][npm-url]
+[![node][node]][node-url]
+[![deps][deps]][deps-url]
+[![license][license]][license-url]
+[![builds][builds]][builds-url]
+[![tag][tag]][tag-url]
+[![release][release]][release-url]
+[![prs][prs]][prs-url]
+
 ### install
 
 ```
@@ -16,3 +25,24 @@ Http.get({url:'http://example.com/api/getUserInfo'}).then(res=>{
 });
 
 ```
+
+
+[npm]: https://img.shields.io/npm/v/@iovx/utils
+[npm-url]: http://47.104.247.250:8081/-/web/detail/@hope/cli
+[node]: https://badgen.net/npm/node/@iovx/utils
+[node-url]: https://nodejs.org
+[deps]: https://img.shields.io/david/webpack/webpack.svg
+[deps-url]: #
+[tests]: https://img.shields.io/travis/webpack/webpack/master.svg
+[tests-url]: #
+[prs]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg
+[prs-url]: #
+[tag]: https://badgen.net/github/tags/iovx/utils
+[tag-url]: #
+[release]: https://badgen.net/github/release/iovx/utils
+[release-url]: #
+[license]: https://badgen.net/npm/license/@iovx/utils
+[license-url]: #
+[builds-url]: #
+[builds]: https://api.travis-ci.org/iovx/utils.svg?branch=master
+[cover]: https://img.shields.io/coveralls/webpack/webpack.svg
