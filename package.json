@@ -19,6 +19,16 @@
   },
   "author": "ixw2017",
   "license": "MIT",
+  "homepage": "",
+  "repository": {
+    "url": "https://github.com/iovx/utils.git"
+  },
+  "bugs": {
+    "url": "https://github.com/iovx/utils/issues"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
       "eslint --fix"
