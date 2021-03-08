@@ -1,0 +1,50 @@
+{
+  "tsFiles": [
+    "src/**/*.ts",
+    "!src/**/__tests__/**/*.ts"
+  ],
+  "assetFiles": [
+    "src/**/*.@(json|png|jpg|jpeg|gif|svg)"
+  ],
+  "dist": "",
+  "libDir": "src",
+  "cwd": ".",
+  "compress": {
+    "dist": false
+  },
+  "clean": [
+    "dist",
+    "es",
+    "lib"
+  ],
+  "pageOptions": {
+    "root": "docs",
+    "inject": {},
+    "page": {
+      "name": "index",
+      "title": "微风文档",
+      "filename": "index.html"
+    },
+    "server": {
+      "port": "7779"
+    },
+    "dll": [
+      {
+        "name": "bundle",
+        "entry": [
+          "react",
+          "react-dom",
+          "react-router",
+          "react-redux",
+          "redux-saga",
+          "react-router-dom",
+          "highlight.js",
+          "marked",
+          "axios",
+          "for-editor",
+          "crypto-js"
+        ]
+      }
+    ]
+  }
+}

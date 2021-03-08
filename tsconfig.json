@@ -1,0 +1,48 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "jsx": "react",
+    "noUnusedParameters": false,
+    "noUnusedLocals": false,
+    "noImplicitAny": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "lib": [
+      "dom",
+      "es5",
+      "es2017",
+      "es7"
+    ],
+    "types": [
+      "ts-node",
+      "node",
+      "jest"
+    ],
+    "noEmit": false,
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "@iovx/utils/*": [
+        "lib/*"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "docs/**/*.ts",
+    "typings/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "config",
+    "public",
+    "src/**/__tests__/"
+  ]
+}
