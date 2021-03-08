@@ -1,11 +1,12 @@
 {
   "name": "@iovx/utils",
   "version": "1.0.6",
-  "description": "微风平台工具集合",
+  "description": "\uD83E\uDDF0 微风平台工具集合",
   "main": "dist/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "test": "jest --coverage",
+    "test": "jest --ci --coverage",
+    "codecov": "codecov",
     "lint": "eslint --ext .tsx,.ts --fix ./src",
     "dist": "iv dist",
     "build": "iv build",
@@ -39,6 +40,7 @@
   "devDependencies": {
     "@iovx/iv-tool": "^1.1.3",
     "@types/classnames": "^2.2.9",
+    "codecov": "^3.8.1",
     "moment": "^2.27.0"
   },
   "engines": {
