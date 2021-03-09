@@ -1,7 +1,7 @@
 {
   "name": "@iovx/utils",
   "version": "1.0.6",
-  "description": "\uD83E\uDDF0 微风平台工具集合",
+  "description": "微风平台工具集合",
   "main": "dist/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
