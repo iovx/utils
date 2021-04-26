@@ -1,4 +1,13 @@
-import { copyTreeList, getTreeNode, getTreeNodesOfDepth, listToMap, toTree, treeToMap, treeTravel } from '../tree';
+import {
+  copyTreeList,
+  getTreeNode,
+  getTreeNodePath,
+  getTreeNodesOfDepth,
+  listToMap,
+  toTree,
+  treeToMap,
+  treeTravel
+} from '../tree';
 
 
 describe('测试Tree相关', () => {
@@ -60,7 +69,47 @@ describe('测试Tree相关', () => {
         {
           id: 4,
           pid: 2,
-          children: [],
+          children: [
+            {
+              id: 41,
+              pid: 3,
+              children: [
+                {
+                  id: 411,
+                  pid: 41,
+                  children: [
+
+                  ],
+                  data: {
+                    name: 'Spring Boot',
+                  },
+                },
+                {
+                  id: 412,
+                  pid: 41,
+                  children: [
+
+                  ],
+                  data: {
+                    name: 'Spring Cloud',
+                  },
+                },
+                {
+                  id: 413,
+                  pid: 41,
+                  children: [
+
+                  ],
+                  data: {
+                    name: 'Spring MVC',
+                  },
+                },
+              ],
+              data: {
+                name: 'Spring',
+              },
+            },
+          ],
           data: {
             name: 'Java',
           },
@@ -202,7 +251,7 @@ describe('测试Tree相关', () => {
       },
     ];
     const result = getTreeNodesOfDepth(data, 0, (node) => {
-      const newNode = { ...node };
+      const newNode = {...node};
       newNode.children = [];
       return newNode;
     });
@@ -449,4 +498,7 @@ describe('测试Tree相关', () => {
     expect(listToMap(data, 'id', item => item.data.name)).toEqual(expected2);
     expect(listToMap(data, 'nullKey', item => item.data.name)).toEqual({});
   });
+  test('树路径获取', () => {
+    expect(getTreeNodePath(tree, d => d.data.name === 'Spring Cloud', n => n.data.name).reverse().join(',')).toBe('Server End,Java,Spring,Spring Cloud')
+  })
 });
