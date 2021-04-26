@@ -1,4 +1,3 @@
-
 /**
  * 判断值是否是对象
  * @param obj
@@ -36,7 +35,9 @@ export function isPlainArrayEqual<T extends keyof any>(arr1: T[], arr2: T[]) {
   return arr1.sort().join('') === arr2.sort().join('');
 }
 
-export function noop(..._args: any[]) {}
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+export function noop(..._args: any[]) {
+}
 
 /**
  * 将列表转换为指定键的 Map
@@ -87,4 +88,8 @@ export function fillWith<T = any>(keys: string[], callback: (key: string) => T) 
     }),
     {}
   );
+}
+
+export function concat(...segments: string[]) {
+  return segments.filter(Boolean).join('/').replace(/\/+/g, '/').replace(/.+\/$/, '');
 }
