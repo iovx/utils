@@ -1,5 +1,5 @@
 /* eslint-disable  @typescript-eslint/no-use-before-define */
-import {ITreeNode, MapType} from './interface';
+import { ITreeNode, MapType } from './interface';
 
 /**
  * 复制TREE
@@ -31,8 +31,8 @@ export function treeTravel(sourceTreeList: ITreeNode[], callback?: (item: ITreeN
  * @returns {{id: number; pid: number; data: any; children: ITreeNode[]}}
  */
 export function transformOutItem(item: ITreeNode, inner: ITreeNode[]) {
-  const {id, pid, data} = item;
-  return {id, pid, data, children: inner};
+  const { id, pid, data } = item;
+  return { id, pid, data, children: inner };
 }
 
 /**
@@ -47,7 +47,7 @@ export function transformOutData(
   inner: ITreeNode[],
   callback?: (item: ITreeNode, inner: ITreeNode[]) => ITreeNode
 ) {
-  const {children} = Object.assign({}, item);
+  const { children } = Object.assign({}, item);
   if (children && children.length) {
     inner = children.map((childItem) => {
       return transformOutData(childItem, inner, callback);
@@ -96,13 +96,13 @@ export function treeToList(tree: ITreeNode[]) {
   return result;
 
   function getNode(item: ITreeNode) {
-    const {children} = item;
+    const { children } = item;
     if (children && children.length) {
       item.children.forEach((childItem) => {
         getNode(childItem);
       });
     }
-    const newNode: ITreeNode = Object.assign({}, item, {children: []});
+    const newNode: ITreeNode = Object.assign({}, item, { children: [] });
     result.push(newNode);
   }
 }
@@ -246,12 +246,12 @@ export function searchTree(data: ITreeNode[], filter: (key: ITreeNode) => boolea
   return result.filter(filter);
 
   function loop(item: ITreeNode, inner: ITreeNode[], filter: (key: ITreeNode) => boolean) {
-    const {children} = Object.assign({}, item);
+    const { children } = Object.assign({}, item);
     if (children && children.length) {
       inner = children.map((item) => loop(item, inner, filter)).filter(filter);
     }
-    const {children: ic, ...rest} = item;
-    return {...rest, children: inner};
+    const { children: ic, ...rest } = item;
+    return { ...rest, children: inner };
   }
 }
 

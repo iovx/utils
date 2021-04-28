@@ -23,7 +23,7 @@ export function isEmpty(o: unknown) {
 }
 
 export function filterEmptyKey<T extends Record<string, any>>(o: T, excludeKeys: (keyof T)[] = []) {
-  Object.keys(o).forEach(i => {
+  Object.keys(o).forEach((i) => {
     if (isEmpty(o[i]) || excludeKeys.includes(i)) {
       delete o[i];
     }
@@ -36,8 +36,7 @@ export function isPlainArrayEqual<T extends keyof any>(arr1: T[], arr2: T[]) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-export function noop(..._args: any[]) {
-}
+export function noop(..._args: any[]) {}
 
 /**
  * 将列表转换为指定键的 Map
@@ -47,7 +46,7 @@ export function noop(..._args: any[]) {
  */
 export function listToMap<T extends Record<string, any>>(list: T[], key: keyof T) {
   const result: Record<string, any> = {};
-  list.forEach(item => {
+  list.forEach((item) => {
     const itemKey = item[key];
     if (typeof itemKey !== 'undefined' && itemKey !== '' && item !== null) {
       result[itemKey] = item;
@@ -92,4 +91,10 @@ export function fillWith<T = any>(keys: string[], callback: (key: string) => T) 
 
 export function concat(...segments: string[]) {
   return segments.filter(Boolean).join('/').replace(/\/+/g, '/').replace(/.+\/$/, '');
+}
+
+export function sleep(delay: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, delay);
+  });
 }

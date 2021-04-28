@@ -31,7 +31,7 @@ export default class Task<T extends Record<string, any> = {}> extends LocalEvent
 
   constructor(options: TaskOptions<T>) {
     super();
-    const {id, callback, priority, retryPriority, retrievable} = options;
+    const { id, callback, priority, retryPriority, retrievable } = options;
     this.id = id;
     this.priority = priority || 0;
     this.retrievable = retrievable || false;
@@ -55,7 +55,7 @@ export default class Task<T extends Record<string, any> = {}> extends LocalEvent
       return false;
     }
     this.state = TaskState.CANCEL;
-    this.fire('cancel', {task: this, profile: this.getProfile()});
+    this.fire('cancel', { task: this, profile: this.getProfile() });
     return true;
   }
 
@@ -74,7 +74,7 @@ export default class Task<T extends Record<string, any> = {}> extends LocalEvent
     }
     this._start();
     return this.callback(this.callbackData, this.getContext())
-      .then(({state, message}) => {
+      .then(({ state, message }) => {
         this.message = message;
         if (state) {
           return this.success();
@@ -94,7 +94,7 @@ export default class Task<T extends Record<string, any> = {}> extends LocalEvent
         if (!this.isRunning()) {
           return;
         }
-        this.fire('report', {data: args, task: this});
+        this.fire('report', { data: args, task: this });
       },
     };
   }
