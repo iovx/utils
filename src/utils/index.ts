@@ -98,3 +98,71 @@ export function sleep(delay: number) {
     setTimeout(resolve, delay);
   });
 }
+
+export const StringUtil = {
+  concatWith(glue: string, ...segment: string[]) {
+    return segment.filter(Boolean).join(glue);
+  },
+};
+
+export function getObjectValueOfKey<T = any>(key: string, config: Record<string, any>) {
+  let temp: any = Object.assign({}, config);
+  if (!key) {
+    return temp;
+  }
+  const keyPath = key.split('.');
+  let result: T = null as any;
+  do {
+    const keyItem = keyPath.shift();
+    if (keyItem) {
+      result = temp[keyItem];
+      temp = result;
+    }
+  } while (keyPath.length);
+  return (result as any) as T;
+}
+
+export function setObjectValueOfKey<T = any>(key: string, value: any, config: Record<string, any>) {
+  let temp: any = config;
+  if (!key) {
+    return temp;
+  }
+  const keyPath = key.split('.');
+  let result: T = null as any;
+  do {
+    const keyItem = keyPath.shift();
+    const restLen = keyPath.length;
+    if (keyItem) {
+      result = temp[keyItem];
+      if (!temp.hasOwnProperty(keyItem)) {
+        temp[keyItem] = restLen ? {} : value;
+      } else {
+        temp[keyItem] = restLen ? result : value;
+      }
+      temp = result;
+    }
+  } while (keyPath.length);
+  return config;
+}
+
+export function isValidJSONValue(value: any): value is string | number | boolean {
+  return ['string', 'number', 'boolean'].includes(typeof value);
+}
+export function getPrintJSON(config: any) {
+  const result: [string, string][] = [];
+  Object.keys(config).forEach((i) => {
+    const v = config[i];
+    if (typeof v !== 'undefined' && !Array.isArray(v)) {
+      if (typeof v === 'object') {
+        Object.keys(v).forEach((vk) => {
+          if (isValidJSONValue(v[vk])) {
+            result.push([`${i}.${vk}`, v[vk]]);
+          }
+        });
+      } else {
+        result.push([i, v]);
+      }
+    }
+  });
+  return result;
+}
