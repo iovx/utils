@@ -166,3 +166,12 @@ export function getPrintJSON(config: any) {
   });
   return result;
 }
+
+export function kSort<T extends { [index: string]: any }>(obj: T) {
+  return Object.keys(obj)
+    .sort((a, b) => a.localeCompare(b))
+    .reduce<Record<string, any>>((acc, c) => {
+      acc[c] = obj[c];
+      return acc;
+    }, {});
+}
